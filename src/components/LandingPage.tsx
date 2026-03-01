@@ -4,6 +4,8 @@ import React from 'react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Shield, Zap, BarChart3 } from 'lucide-react';
 import TechBackground from './TechBackground';
+import TransparencySection from './TransparencySection';
+import { MadeWithDyad } from "./made-with-dyad";
 
 const LandingPage = () => {
   return (
@@ -68,6 +70,13 @@ const LandingPage = () => {
             </p>
           </div>
         </section>
+
+        {/* Transparency Section */}
+        <TransparencySection />
+
+        <footer className="pt-10">
+          <MadeWithDyad />
+        </footer>
       </div>
     </div>
   );
