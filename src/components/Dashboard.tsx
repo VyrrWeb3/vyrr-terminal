@@ -26,22 +26,25 @@ const Dashboard = () => {
   useEffect(() => {
     async function fetchYields() {
       try {
+        console.log("Initiating real-time uplink to DefiLlama...");
         const res = await fetch('https://yields.llama.fi/pools');
         const json = await res.json();
         
-        // Filter for Solana, USDC, and TVL > $1M
+        // Filter strictly for Solana + USDC + TVL > $1M
         const filtered = json.data.filter((pool: any) => 
           pool.chain === 'Solana' && 
           pool.symbol === 'USDC' && 
           pool.tvlUsd > 1000000
         );
         
-        // Sort by highest APY and take top 3
+        // Sort by highest APY descending and take top 3
         const sorted = filtered.sort((a: any, b: any) => b.apy - a.apy).slice(0, 3);
+        
+        console.log("Yield Grid Updated:", sorted);
         setVaults(sorted);
       } catch (e) {
-        console.error('Failed to fetch yields:', e);
-        setVyrrResponse("Connection disrupted. Retrying uplink to the yield grid.");
+        console.error('Uplink failure:', e);
+        setVyrrResponse("Connection disrupted. Check your network or the DefiLlama API status.");
       }
     }
     fetchYields();
@@ -79,7 +82,6 @@ const Dashboard = () => {
       <TechBackground />
       
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Fixed Z-Index for Wallet Dropdown */}
         <header className="mb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-[100]">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -140,7 +142,7 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Strict Live-Only Rendering */}
+          {/* Strict Loading State Check */}
           {vaults.length === 0 ? (
             <VaultLoading />
           ) : (
