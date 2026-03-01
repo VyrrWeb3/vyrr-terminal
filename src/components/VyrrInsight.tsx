@@ -5,16 +5,16 @@ import { Sparkles, Zap, Ghost, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-interface VoshInsightProps {
+interface VyrrInsightProps {
   isDataLoading?: boolean;
 }
 
-const VoshInsight = ({ isDataLoading }: VoshInsightProps) => {
+const VyrrInsight = ({ isDataLoading }: VyrrInsightProps) => {
   const { publicKey, connected } = useWallet();
   
-  const getVoshMessage = () => {
+  const getVyrrMessage = () => {
     if (!connected) {
-      return "Yo! I'm Vosh. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
+      return "Yo! I'm Vyrr. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
     }
     
     if (isDataLoading) {
@@ -24,7 +24,7 @@ const VoshInsight = ({ isDataLoading }: VoshInsightProps) => {
     const address = publicKey?.toBase58();
     const truncated = address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "User";
     
-    return `Whoosh! You're in. I'm Vosh, your high-speed guide to the best vaults on Solana. Let's get moving, ${truncated}!`;
+    return `Whoosh! You're in. I'm Vyrr, your high-speed guide to the best vaults on Solana. Let's get moving, ${truncated}!`;
   };
 
   return (
@@ -38,10 +38,10 @@ const VoshInsight = ({ isDataLoading }: VoshInsightProps) => {
         </div>
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
-            Vosh AI v1.0 {connected ? "[ACTIVE]" : "[STANDBY]"}
+            Vyrr AI v1.0 {connected ? "[ACTIVE]" : "[STANDBY]"}
           </h3>
           <p className="text-xl font-black italic tracking-tight">
-            "{getVoshMessage()}"
+            "{getVyrrMessage()}"
           </p>
         </div>
       </CardContent>
@@ -49,4 +49,4 @@ const VoshInsight = ({ isDataLoading }: VoshInsightProps) => {
   );
 };
 
-export default VoshInsight;
+export default VyrrInsight;

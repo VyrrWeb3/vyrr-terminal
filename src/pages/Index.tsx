@@ -3,7 +3,7 @@
 import React from 'react';
 import SoloJazzBackground from '@/components/SoloJazzBackground';
 import CRTEffect from '@/components/CRTEffect';
-import VoshInsight from '@/components/VoshInsight';
+import VyrrInsight from '@/components/VyrrInsight';
 import DashboardCard from '@/components/DashboardCard';
 import VaultLoading from '@/components/VaultLoading';
 import { Wallet, TrendingUp, ShieldCheck, Activity, Coins } from 'lucide-react';
@@ -29,7 +29,7 @@ const Index = () => {
               <h2 className="text-sm font-bold tracking-[0.3em] uppercase">Solana Yield Aggregator</h2>
             </div>
             <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter text-black drop-shadow-[4px_4px_0px_#0ea5e9]">
-              VOSH<span className="text-primary">.</span>DASH
+              VYRR<span className="text-primary">.</span>DASH
             </h1>
             <p className="text-lg font-bold text-muted-foreground mt-2 italic">
               High-Speed Yield. No Lag.
@@ -43,7 +43,7 @@ const Index = () => {
           </div>
         </header>
 
-        <VoshInsight isDataLoading={isLoading} />
+        <VyrrInsight isDataLoading={isLoading} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <DashboardCard 
