@@ -20,29 +20,31 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
 
   const handleJoinWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!email) return;
 
+    const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfeLxY1k66UnrxcSJ6fS3SwjcDYOCvFGO7KOAOzg2aTvoDyPg/formResponse';
+    const EMAIL_ENTRY = 'entry.1740249184';
+    const WALLET_ENTRY = 'entry.1375079808';
+
+    const formData = new URLSearchParams();
+    formData.append(EMAIL_ENTRY, email);
+    formData.append(WALLET_ENTRY, publicKey ? publicKey.toString() : 'Not connected');
+
     try {
-      const response = await fetch('https://formspree.io/f/mojnzywy', {
+      // Using no-cors to prevent browser blocking from Google Forms
+      await fetch(FORM_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-          email: email,
-          wallet: publicKey ? publicKey.toString() : 'Not connected'
-        })
+        body: formData.toString()
       });
 
-      if (response.ok) {
-        setJoined(true);
-      } else {
-        console.error('Form submission failed');
-      }
+      // Since no-cors doesn't return a readable response, we assume success
+      setJoined(true);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Submission error:', error);
     }
   };
 
