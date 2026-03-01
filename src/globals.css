@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Solana Wallet Adapter Styles */
-@import '@solana/wallet-adapter-react-ui/styles.css';
-
 @layer base {
   :root {
     --background: 180 100% 98%;
@@ -54,6 +51,10 @@
     30% { opacity: 0.99; }
     100% { opacity: 0.98; }
   }
+
+  .jazz-brush {
+    filter: url(#brush-texture);
+  }
 }
 
 /* Custom Wallet Button Styling */
@@ -84,9 +85,8 @@
   box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1) !important;
 }
 
-/* Ensure the modal is always on top */
-.wallet-adapter-modal-wrapper {
-  z-index: 9999 !important;
+.wallet-adapter-button-trigger {
+  background-color: #d946ef !important;
 }
 
 @layer base {
