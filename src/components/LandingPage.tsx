@@ -5,13 +5,14 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Shield, Zap, BarChart3 } from 'lucide-react';
 import TechBackground from './TechBackground';
 import TransparencySection from './TransparencySection';
+import Footer from './Footer';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       <TechBackground />
       
-      <div className="max-w-6xl w-full z-10 space-y-24 py-20">
+      <div className="max-w-6xl w-full z-10 space-y-24 py-20 px-6">
         {/* Hero Section */}
         <header className="text-center space-y-10">
           <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2 rounded-full mb-4 backdrop-blur-md">
@@ -72,6 +73,10 @@ const LandingPage = () => {
 
         {/* Transparency Section */}
         <TransparencySection />
+      </div>
+
+      <div className="w-full">
+        <Footer />
       </div>
     </div>
   );

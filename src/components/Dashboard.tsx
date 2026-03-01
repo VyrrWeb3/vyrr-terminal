@@ -8,6 +8,7 @@ import VaultLoading from './VaultLoading';
 import ExtendedGrid from './ExtendedGrid';
 import PortfolioView from './PortfolioView';
 import WaitlistModal from './WaitlistModal';
+import Footer from './Footer';
 import { 
   Wallet, 
   TrendingUp, 
@@ -195,10 +196,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-12 relative">
+    <div className="min-h-screen flex flex-col relative">
       <TechBackground />
       
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto w-full relative z-10 px-6 pt-12 flex-1">
         <header className="mb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-[100]">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -385,6 +386,8 @@ const Dashboard = () => {
         isOpen={showWaitlist} 
         onClose={() => setShowWaitlist(false)} 
       />
+
+      <Footer />
     </div>
   );
 };
