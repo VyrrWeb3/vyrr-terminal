@@ -19,7 +19,6 @@ import {
   LayoutGrid, 
   Briefcase 
 } from 'lucide-react';
-import { MadeWithDyad } from "./made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button } from '@/components/ui/button';
@@ -386,10 +385,6 @@ const Dashboard = () => {
         isOpen={showWaitlist} 
         onClose={() => setShowWaitlist(false)} 
       />
-
-      <footer className="mt-10 pb-8">
-        <MadeWithDyad />
-      </footer>
     </div>
   );
 };
