@@ -3,15 +3,25 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface ExtendedGridProps {
   vaults: any[];
-  onDeploy: (name: string, apy: number) => void;
+  onDeploy: (name: string, apy: number, amount: number) => void;
   connected: boolean;
   formatTVL: (val: number) => string;
+  allocations: Record<string, number>;
+  onAllocationChange: (poolId: string, value: string) => void;
 }
 
-const ExtendedGrid = ({ vaults, onDeploy, connected, formatTVL }: ExtendedGridProps) => {
+const ExtendedGrid = ({ 
+  vaults, 
+  onDeploy, 
+  connected, 
+  formatTVL, 
+  allocations, 
+  onAllocationChange 
+}: ExtendedGridProps) => {
   if (vaults.length === 0) return null;
 
   return (
@@ -33,6 +43,7 @@ const ExtendedGrid = ({ vaults, onDeploy, connected, formatTVL }: ExtendedGridPr
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Protocol</th>
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">TVL</th>
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">APY</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center w-32">Allocation</th>
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Action</th>
               </tr>
             </thead>
@@ -62,10 +73,21 @@ const ExtendedGrid = ({ vaults, onDeploy, connected, formatTVL }: ExtendedGridPr
                       {pool.apy.toFixed(2)}%
                     </span>
                   </td>
+                  <td className="px-6 py-4">
+                    <div className="relative max-w-[100px] mx-auto">
+                      <Input 
+                        type="number"
+                        value={allocations[pool.pool] || 0}
+                        onChange={(e) => onAllocationChange(pool.pool, e.target.value)}
+                        className="bg-slate-950/50 border-white/10 h-8 text-[10px] font-black text-white rounded-lg focus:border-pink-500 text-center pr-4"
+                      />
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-600">$</span>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 text-right">
                     <Button 
-                      onClick={() => onDeploy(pool.project, pool.apy)}
-                      disabled={!connected}
+                      onClick={() => onDeploy(pool.project, pool.apy, allocations[pool.pool] || 0)}
+                      disabled={!connected || (allocations[pool.pool] || 0) <= 0}
                       size="sm"
                       className="bg-transparent border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-500/10 text-cyan-400 font-black text-[10px] uppercase tracking-widest px-4 h-8 rounded-lg transition-all disabled:opacity-20"
                     >

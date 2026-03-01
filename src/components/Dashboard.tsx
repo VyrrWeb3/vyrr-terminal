@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import TechBackground from './TechBackground';
 import VyrrInsight from './VyrrInsight';
 import DashboardCard from './DashboardCard';
 import VaultLoading from './VaultLoading';
 import ExtendedGrid from './ExtendedGrid';
 import WaitlistModal from './WaitlistModal';
-import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, ExternalLink, Sparkles, Cpu } from 'lucide-react';
+import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, Sparkles, Cpu } from 'lucide-react';
 import { MadeWithDyad } from "./made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -23,7 +23,7 @@ const Dashboard = () => {
   
   // Master Console States
   const [depositAmount, setDepositAmount] = useState<string>("1000");
-  const [allocations, setAllocations] = useState<number[]>([0, 0, 0]);
+  const [allocations, setAllocations] = useState<Record<string, number>>({});
 
   const formatTVL = (val: number) => {
     if (val >= 1000000000) return `$${(val / 1000000000).toFixed(1)}B`;
@@ -31,16 +31,7 @@ const Dashboard = () => {
     return `$${val.toLocaleString()}`;
   };
 
-  // Auto-calculate split when total deposit changes
-  useEffect(() => {
-    const total = parseFloat(depositAmount) || 0;
-    setAllocations([
-      Math.round(total * 0.6),
-      Math.round(total * 0.3),
-      Math.round(total * 0.1)
-    ]);
-  }, [depositAmount]);
-
+  // Fetch yields on mount
   useEffect(() => {
     async function fetchYields() {
       try {
@@ -63,24 +54,50 @@ const Dashboard = () => {
     fetchYields();
   }, []);
 
-  const handleManualAllocationChange = (index: number, value: string) => {
-    const newVal = parseFloat(value) || 0;
-    const newAllocations = [...allocations];
-    newAllocations[index] = newVal;
+  // Auto-calculate split when total target or vault list changes
+  useEffect(() => {
+    if (vaults.length === 0) return;
+
+    const total = parseFloat(depositAmount) || 0;
+    const newAllocations: Record<string, number> = {};
+    
+    // Default 60/30/10 split for top 3
+    vaults.forEach((pool, index) => {
+      if (index === 0) newAllocations[pool.pool] = Math.round(total * 0.6);
+      else if (index === 1) newAllocations[pool.pool] = Math.round(total * 0.3);
+      else if (index === 2) newAllocations[pool.pool] = Math.round(total * 0.1);
+      else newAllocations[pool.pool] = 0;
+    });
+
     setAllocations(newAllocations);
+  }, [depositAmount, vaults]);
+
+  const totalAllocated = useMemo(() => {
+    return Object.values(allocations).reduce((acc, val) => acc + val, 0);
+  }, [allocations]);
+
+  const remainingBalance = useMemo(() => {
+    return (parseFloat(depositAmount) || 0) - totalAllocated;
+  }, [depositAmount, totalAllocated]);
+
+  const handleManualAllocationChange = (poolId: string, value: string) => {
+    const newVal = parseFloat(value) || 0;
+    setAllocations(prev => ({
+      ...prev,
+      [poolId]: newVal
+    }));
   };
 
-  const handleDeposit = async (vaultName: string, apy: number, amount?: number) => {
+  const handleDeposit = async (vaultName: string, apy: number, amount: number) => {
     if (!publicKey || !signMessage) {
       showError("Uplink required. Please connect your wallet.");
       return;
     }
 
     try {
-      const displayAmount = amount || (parseFloat(depositAmount) / 3);
-      setVyrrResponse(`Executing override. Authorization for ${displayAmount} USDC into ${vaultName} at ${apy.toFixed(2)}% APY.`);
+      setVyrrResponse(`Executing authorization. Allocation of ${amount} USDC into ${vaultName} at ${apy.toFixed(2)}% APY.`);
       
-      const messageText = `Vyrr System Authorization: I am confirming a test deposit of ${displayAmount} into the ${vaultName} vault at ${apy.toFixed(2)}% APY.`;
+      const messageText = `Vyrr System Authorization: I am confirming a test deposit of ${amount} into the ${vaultName} vault at ${apy.toFixed(2)}% APY.`;
       const encodedMessage = new TextEncoder().encode(messageText);
       
       await signMessage(encodedMessage);
@@ -92,6 +109,26 @@ const Dashboard = () => {
       setVyrrResponse("Authorization failed. The transaction was aborted.");
       showError("Authorization Failed");
       setTimeout(() => setVyrrResponse(null), 6000);
+    }
+  };
+
+  const handleMasterDeploy = async () => {
+    if (!publicKey || !signMessage) return;
+
+    try {
+      setVyrrResponse(`Master Execution: Deploying ${depositAmount} USDC across grid with manual overrides.`);
+      
+      const messageText = `Vyrr Master Protocol: I authorize the deployment of ${depositAmount} USDC across the Solana Yield Grid as specified in current Terminal allocations.`;
+      const encodedMessage = new TextEncoder().encode(messageText);
+      
+      await signMessage(encodedMessage);
+      
+      setVyrrResponse(null);
+      setShowWaitlist(true);
+    } catch (error) {
+      console.error("Master signing failed:", error);
+      setVyrrResponse("Execution Aborted.");
+      showError("Master Authorization Failed");
     }
   };
 
@@ -141,24 +178,33 @@ const Dashboard = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em]">Deployment Amount (USDC)</label>
-                <div className="flex items-center gap-4">
-                  <Input 
-                    type="number" 
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(e.target.value)}
-                    className="bg-slate-950/50 border-white/10 text-xl font-black italic text-cyan-400 h-14 rounded-xl w-full md:w-48"
-                  />
-                  <Button 
-                    onClick={() => handleDeposit("Aggregated Grid", 12.4, parseFloat(depositAmount))}
-                    disabled={!connected}
-                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-widest px-8 h-14 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)]"
-                  >
-                    Auto-Route Capital
-                  </Button>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <Input 
+                      type="number" 
+                      value={depositAmount}
+                      onChange={(e) => setDepositAmount(e.target.value)}
+                      className="bg-slate-950/50 border-white/10 text-xl font-black italic text-cyan-400 h-14 rounded-xl w-full md:w-48"
+                    />
+                    <div className="flex-1 flex flex-col gap-2">
+                      <div className={`text-[10px] font-black uppercase tracking-widest ${remainingBalance === 0 ? 'text-green-400' : 'text-pink-500'}`}>
+                        {remainingBalance === 0 
+                          ? 'Capital Fully Allocated' 
+                          : `Unallocated Capital: $${remainingBalance}`}
+                      </div>
+                      <Button 
+                        onClick={handleMasterDeploy}
+                        disabled={!connected || remainingBalance !== 0}
+                        className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-widest px-8 h-14 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:opacity-20 disabled:grayscale transition-all"
+                      >
+                        Auto-Route Capital
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="font-mono text-[10px] text-cyan-400/70">
+                    {`> SYSTEM RATIONALE: Capital heavily weighted toward Rank 1 APY. 3-point diversification applied to mitigate protocol-specific smart contract risk. User may override allocations below.`}
+                  </p>
                 </div>
-                <p className="font-mono text-[10px] text-cyan-400/70 mt-2">
-                  {`> SYSTEM RATIONALE: Capital heavily weighted toward Rank 1 APY. 3-point diversification applied to mitigate protocol-specific smart contract risk. User may override allocations below.`}
-                </p>
               </div>
             </div>
           </div>
@@ -204,8 +250,8 @@ const Dashboard = () => {
                         <div className="relative">
                           <Input 
                             type="number"
-                            value={allocations[index]}
-                            onChange={(e) => handleManualAllocationChange(index, e.target.value)}
+                            value={allocations[pool.pool] || 0}
+                            onChange={(e) => handleManualAllocationChange(pool.pool, e.target.value)}
                             className="bg-slate-950/50 border-white/10 h-10 text-xs font-black text-white rounded-lg focus:border-pink-500 pr-8"
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-600">$</span>
@@ -213,8 +259,8 @@ const Dashboard = () => {
                       </div>
 
                       <Button 
-                        onClick={() => handleDeposit(pool.project, pool.apy, allocations[index])}
-                        disabled={!connected}
+                        onClick={() => handleDeposit(pool.project, pool.apy, allocations[pool.pool] || 0)}
+                        disabled={!connected || (allocations[pool.pool] || 0) <= 0}
                         className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-400 hover:to-cyan-300 text-white font-black text-xs uppercase tracking-widest px-8 h-12 rounded-xl transition-all shadow-lg shadow-pink-500/20 disabled:opacity-30"
                       >
                         Deploy
@@ -228,9 +274,11 @@ const Dashboard = () => {
 
           <ExtendedGrid 
             vaults={vaults.slice(3, 10)} 
-            onDeploy={(name, apy) => handleDeposit(name, apy, 0)} 
+            onDeploy={handleDeposit} 
             connected={connected} 
             formatTVL={formatTVL}
+            allocations={allocations}
+            onAllocationChange={handleManualAllocationChange}
           />
         </div>
 
