@@ -8,7 +8,17 @@ import VaultLoading from './VaultLoading';
 import ExtendedGrid from './ExtendedGrid';
 import PortfolioView from './PortfolioView';
 import WaitlistModal from './WaitlistModal';
-import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, Sparkles, Cpu, LayoutGrid, Briefcase } from 'lucide-react';
+import { 
+  Wallet, 
+  TrendingUp, 
+  ShieldCheck, 
+  Activity, 
+  Coins, 
+  Sparkles, 
+  Cpu, 
+  LayoutGrid, 
+  Briefcase 
+} from 'lucide-react';
 import { MadeWithDyad } from "./made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -31,7 +41,6 @@ const Dashboard = () => {
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [view, setView] = useState<'market' | 'portfolio'>('market');
   
-  // Master Console & Portfolio States
   const [depositAmount, setDepositAmount] = useState<string>("1000");
   const [allocations, setAllocations] = useState<Record<string, number>>({});
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
@@ -42,7 +51,6 @@ const Dashboard = () => {
     return `$${val.toLocaleString()}`;
   };
 
-  // Fetch yields on mount
   useEffect(() => {
     async function fetchYields() {
       try {
@@ -65,14 +73,12 @@ const Dashboard = () => {
     fetchYields();
   }, []);
 
-  // Auto-calculate split when total target or vault list changes
   useEffect(() => {
     if (vaults.length === 0) return;
 
     const total = parseFloat(depositAmount) || 0;
     const newAllocations: Record<string, number> = {};
     
-    // Default 60/30/10 split for top 3
     vaults.forEach((pool, index) => {
       if (index === 0) newAllocations[pool.pool] = Math.round(total * 0.6);
       else if (index === 1) newAllocations[pool.pool] = Math.round(total * 0.3);
@@ -113,7 +119,6 @@ const Dashboard = () => {
       
       await signMessage(encodedMessage);
       
-      // Update local portfolio state (simulated)
       setPortfolio(prev => [
         ...prev.filter(i => i.poolId !== poolId),
         { poolId, project: vaultName, apy, amount, timestamp: Date.now() }
@@ -141,7 +146,6 @@ const Dashboard = () => {
       
       await signMessage(encodedMessage);
       
-      // Bulk update portfolio
       const newItems: PortfolioItem[] = [];
       Object.entries(allocations).forEach(([poolId, amount]) => {
         if (amount > 0) {
@@ -212,7 +216,6 @@ const Dashboard = () => {
           </div>
           
           <div className="flex items-center gap-6">
-            {/* View Toggle */}
             <div className="bg-slate-900/50 p-1 rounded-xl border border-white/5 flex gap-1">
               <button 
                 onClick={() => setView('market')}
@@ -246,7 +249,6 @@ const Dashboard = () => {
               <DashboardCard title="Network Latency" value="14ms" description="Real-time sync" icon={<Activity size={20} />} />
             </div>
 
-            {/* Master Console Section */}
             <div className="glass-card p-8 rounded-3xl mb-12 border-l-4 border-l-cyan-500">
               <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="space-y-4 flex-1">
@@ -366,7 +368,8 @@ const Dashboard = () => {
                 allocations={allocations}
                 onAllocationChange={handleManualAllocationChange}
               />
-            </>
+            </div>
+          </>
         ) : (
           <PortfolioView 
             portfolio={portfolio} 
