@@ -7,6 +7,7 @@ import VyrrInsight from '@/components/VyrrInsight';
 import DashboardCard from '@/components/DashboardCard';
 import { Wallet, TrendingUp, ShieldCheck, Activity } from 'lucide-react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 const Index = () => {
   return (
@@ -15,16 +16,22 @@ const Index = () => {
       <CRTEffect />
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <header className="mb-12 text-center md:text-left">
-          <div className="inline-block bg-black text-white px-4 py-1 mb-4 transform -skew-x-12 border-r-8 border-accent">
-            <h2 className="text-sm font-bold tracking-[0.3em] uppercase">Solana Yield Aggregator</h2>
+        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="text-center md:text-left">
+            <div className="inline-block bg-black text-white px-4 py-1 mb-4 transform -skew-x-12 border-r-8 border-accent">
+              <h2 className="text-sm font-bold tracking-[0.3em] uppercase">Solana Yield Aggregator</h2>
+            </div>
+            <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter text-black drop-shadow-[4px_4px_0px_#0ea5e9]">
+              VYRR<span className="text-primary">.</span>DASH
+            </h1>
+            <p className="text-lg font-bold text-muted-foreground mt-2 italic">
+              The most radical yield in the metaverse.
+            </p>
           </div>
-          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter text-black drop-shadow-[4px_4px_0px_#0ea5e9]">
-            VYRR<span className="text-primary">.</span>DASH
-          </h1>
-          <p className="text-lg font-bold text-muted-foreground mt-2 italic">
-            The most radical yield in the metaverse.
-          </p>
+          
+          <div className="flex justify-center md:justify-end">
+            <WalletMultiButton />
+          </div>
         </header>
 
         <VyrrInsight />
