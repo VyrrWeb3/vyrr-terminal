@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Sparkles, Zap, Ghost, Download } from 'lucide-react';
+import { Terminal, Cpu, ShieldCheck, Activity } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -17,34 +17,35 @@ const VyrrInsight = ({ isDataLoading, customMessage }: VyrrInsightProps) => {
     if (customMessage) return customMessage;
     
     if (!connected) {
-      return "Yo! I'm Vyrr. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
+      return "Vyrr Terminal Standby. Please establish a secure wallet connection to begin yield optimization.";
     }
     
     if (isDataLoading) {
-      return "Hold tight! I'm intercepting the high-speed yield streams right now...";
+      return "Synchronizing with Solana mainnet... Intercepting real-time yield vectors.";
     }
     
     const address = publicKey?.toBase58();
-    const truncated = address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "User";
+    const truncated = address ? `${address.slice(0, 6)}...${address.slice(-6)}` : "Authorized User";
     
-    return `Whoosh! You're in. I'm Vyrr, your high-speed guide to the best vaults on Solana. Let's get moving, ${truncated}!`;
+    return `Secure connection established. Welcome, ${truncated}. Vyrr Terminal is online and monitoring high-efficiency vaults.`;
   };
 
   return (
-    <Card className="bg-black text-white border-4 border-primary shadow-[8px_8px_0px_0px_rgba(14,165,233,0.5)] mb-8 overflow-hidden relative group">
-      <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
-        {isDataLoading ? <Download className="text-primary animate-bounce" size={32} /> : <Zap className="text-yellow-400 animate-pulse" size={32} />}
-      </div>
-      <CardContent className="p-6 flex items-center gap-4">
-        <div className="bg-primary p-3 rounded-full">
-          {connected ? <Sparkles className="text-white" /> : <Ghost className="text-white" />}
+    <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl mb-8 overflow-hidden relative group border-l-4 border-l-cyan-500">
+      <CardContent className="p-6 flex items-start gap-5">
+        <div className="bg-cyan-500/10 p-3 rounded-lg border border-cyan-500/20">
+          {connected ? <Terminal className="text-cyan-400" size={24} /> : <Cpu className="text-zinc-500" size={24} />}
         </div>
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
-            Vyrr AI v1.0 {connected ? "[ACTIVE]" : "[STANDBY]"}
-          </h3>
-          <p className="text-xl font-black italic tracking-tight">
-            "{getVyrrMessage()}"
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-500/70">System Status</span>
+            <div className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-cyan-500 animate-pulse' : 'bg-zinc-700'}`} />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
+              {connected ? "Vyrr AI v2.0 [ENCRYPTED]" : "Vyrr AI v2.0 [LOCKED]"}
+            </span>
+          </div>
+          <p className="text-lg font-medium text-zinc-200 leading-relaxed font-mono">
+            {getVyrrMessage()}
           </p>
         </div>
       </CardContent>

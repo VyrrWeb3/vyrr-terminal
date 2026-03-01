@@ -4,89 +4,27 @@
 
 @layer base {
   :root {
-    --background: 180 100% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 190 90% 40%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 280 80% 60%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 320 100% 70%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 190 90% 40%;
-    --radius: 1rem;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 180 100% 50%;
+    --radius: 0.5rem;
   }
-}
-
-@layer utilities {
-  .crt-flicker {
-    animation: flicker 0.15s infinite;
-  }
-
-  .crt-scanlines {
-    background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.1) 50%
-    ), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-    background-size: 100% 4px, 3px 100%;
-    pointer-events: none;
-  }
-
-  @keyframes flicker {
-    0% { opacity: 0.98; }
-    5% { opacity: 0.95; }
-    10% { opacity: 0.99; }
-    15% { opacity: 0.96; }
-    20% { opacity: 0.98; }
-    25% { opacity: 0.95; }
-    30% { opacity: 0.99; }
-    100% { opacity: 0.98; }
-  }
-
-  .jazz-brush {
-    filter: url(#brush-texture);
-  }
-}
-
-/* Custom Wallet Button Styling */
-.wallet-adapter-button {
-  background-color: #d946ef !important; /* Fuchsia */
-  color: white !important;
-  font-family: inherit !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  border: 4px solid black !important;
-  border-radius: 0 !important;
-  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1) !important;
-  transition: all 0.1s ease-in-out !important;
-  height: 48px !important;
-  line-height: 48px !important;
-  padding: 0 24px !important;
-}
-
-.wallet-adapter-button:not([disabled]):hover {
-  background-color: #e879f9 !important;
-  transform: translate(-2px, -2px) !important;
-  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1) !important;
-}
-
-.wallet-adapter-button:not([disabled]):active {
-  transform: translate(2px, 2px) !important;
-  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1) !important;
-}
-
-.wallet-adapter-button-trigger {
-  background-color: #d946ef !important;
 }
 
 @layer base {
@@ -94,6 +32,42 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-zinc-950 text-zinc-100 font-sans antialiased;
   }
+}
+
+.tech-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(34, 211, 238, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+}
+
+.glow-cyan-hover:hover {
+  box-shadow: 0 0 25px rgba(34, 211, 238, 0.3);
+}
+
+/* Custom Wallet Button Styling - Sleek Dark Mode */
+.wallet-adapter-button {
+  background-color: transparent !important;
+  color: #22d3ee !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  border: 1px solid rgba(34, 211, 238, 0.3) !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease-in-out !important;
+  height: 42px !important;
+  font-size: 14px !important;
+}
+
+.wallet-adapter-button:not([disabled]):hover {
+  background-color: rgba(34, 211, 238, 0.1) !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.2) !important;
+}
+
+.wallet-adapter-button-trigger {
+  background-color: transparent !important;
 }

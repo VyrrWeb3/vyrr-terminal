@@ -2,71 +2,70 @@
 
 import React from 'react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { Zap, Shield, Coins, ArrowRight } from 'lucide-react';
-import SoloJazzBackground from './SoloJazzBackground';
-import CRTEffect from './CRTEffect';
+import { Shield, Zap, BarChart3, Lock } from 'lucide-react';
+import TechBackground from './TechBackground';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      <SoloJazzBackground isActive={false} />
-      <CRTEffect />
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      <TechBackground />
       
-      <div className="max-w-4xl w-full z-10 space-y-12">
+      <div className="max-w-5xl w-full z-10 space-y-20">
         {/* Hero Section */}
-        <header className="text-center space-y-6">
-          <div className="inline-block bg-black text-white px-6 py-2 transform -skew-x-12 border-r-8 border-accent mb-4">
-            <h2 className="text-lg font-black tracking-[0.4em] uppercase">Vyrr Protocol</h2>
+        <header className="text-center space-y-8">
+          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 px-4 py-1.5 rounded-full mb-4">
+            <div className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-cyan-400">Vyrr Protocol v2.0</span>
           </div>
-          <h1 className="text-7xl md:text-9xl font-black italic tracking-tighter text-black drop-shadow-[6px_6px_0px_#0ea5e9] leading-none">
-            HIGH-SPEED<br />YIELD<span className="text-primary">.</span>
+          
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight">
+            Institutional Grade <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Solana Yield.</span>
           </h1>
-          <p className="text-xl md:text-2xl font-bold text-black/80 italic max-w-2xl mx-auto">
-            Connect your wallet. We grind the XP. You keep the loot. No lag, just pure Solana gains.
+          
+          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
+            Automated yield optimization for the Solana ecosystem. Secure, transparent, and engineered for maximum capital efficiency.
           </p>
           
-          <div className="pt-8 flex justify-center">
-            <div className="wallet-button-container scale-125 hover:scale-150 transition-transform duration-300">
+          <div className="pt-4 flex justify-center">
+            <div className="glow-cyan rounded-lg">
               <WalletMultiButton />
             </div>
           </div>
         </header>
 
-        {/* Pricing Section */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform hover:-translate-y-1 transition-transform">
-            <div className="bg-primary/20 p-3 w-fit mb-4 border-2 border-black">
-              <Coins className="text-primary" />
+        {/* Features Section */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-2xl backdrop-blur-sm hover:border-cyan-500/30 transition-colors group">
+            <div className="bg-cyan-500/10 p-3 w-fit rounded-xl mb-6 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
+              <BarChart3 className="text-cyan-400" size={24} />
             </div>
-            <h3 className="font-black text-xl uppercase mb-2">Cost to Deposit</h3>
-            <p className="text-4xl font-black text-primary">$0</p>
-            <p className="text-sm font-bold text-muted-foreground mt-2 italic">Totally free to start, dude!</p>
+            <h3 className="font-semibold text-lg text-white mb-3">Zero Entry Fee</h3>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              Deploy capital without upfront costs. We prioritize accessibility for all institutional participants.
+            </p>
           </div>
 
-          <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform hover:-translate-y-1 transition-transform">
-            <div className="bg-secondary/20 p-3 w-fit mb-4 border-2 border-black">
-              <Zap className="text-secondary" />
+          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-2xl backdrop-blur-sm hover:border-cyan-500/30 transition-colors group">
+            <div className="bg-cyan-500/10 p-3 w-fit rounded-xl mb-6 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
+              <Zap className="text-cyan-400" size={24} />
             </div>
-            <h3 className="font-black text-xl uppercase mb-2">Vyrr's Cut</h3>
-            <p className="text-4xl font-black text-secondary">10%</p>
-            <p className="text-sm font-bold text-muted-foreground mt-2 italic">Only on the interest we generate.</p>
+            <h3 className="font-semibold text-lg text-white mb-3">Performance Based</h3>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              A flat 10% performance fee on generated yield. Our incentives are perfectly aligned with your growth.
+            </p>
           </div>
 
-          <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform hover:-translate-y-1 transition-transform">
-            <div className="bg-accent/20 p-3 w-fit mb-4 border-2 border-black">
-              <Shield className="text-accent" />
+          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-2xl backdrop-blur-sm hover:border-cyan-500/30 transition-colors group">
+            <div className="bg-cyan-500/10 p-3 w-fit rounded-xl mb-6 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
+              <Shield className="text-cyan-400" size={24} />
             </div>
-            <h3 className="font-black text-xl uppercase mb-2">Your Cut</h3>
-            <p className="text-4xl font-black text-accent">90%</p>
-            <p className="text-sm font-bold text-muted-foreground mt-2 italic">+ 100% of your principal. Radical.</p>
+            <h3 className="font-semibold text-lg text-white mb-3">Principal Security</h3>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              Retain 100% of your principal. Vyrr only optimizes the yield layer while maintaining asset safety.
+            </p>
           </div>
         </section>
-
-        <div className="text-center">
-          <p className="text-lg font-black uppercase tracking-widest bg-black text-white inline-block px-4 py-1">
-            We only make money when you win.
-          </p>
-        </div>
       </div>
     </div>
   );
