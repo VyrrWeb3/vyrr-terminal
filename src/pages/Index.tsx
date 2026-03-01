@@ -3,20 +3,23 @@
 import React from 'react';
 import SoloJazzBackground from '@/components/SoloJazzBackground';
 import CRTEffect from '@/components/CRTEffect';
-import VyrrInsight from '@/components/VyrrInsight';
+import VoshInsight from '@/components/VoshInsight';
 import DashboardCard from '@/components/DashboardCard';
 import VaultLoading from '@/components/VaultLoading';
-import { Wallet, TrendingUp, ShieldCheck, Activity } from 'lucide-react';
+import { Wallet, TrendingUp, ShieldCheck, Activity, Coins } from 'lucide-react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useVaultData } from '@/hooks/useVaultData';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const { vaults, isLoading } = useVaultData();
+  const { connected } = useWallet();
 
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
-      <SoloJazzBackground />
+      <SoloJazzBackground isActive={connected} />
       <CRTEffect />
       
       <div className="max-w-6xl mx-auto relative z-10">
@@ -26,22 +29,21 @@ const Index = () => {
               <h2 className="text-sm font-bold tracking-[0.3em] uppercase">Solana Yield Aggregator</h2>
             </div>
             <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter text-black drop-shadow-[4px_4px_0px_#0ea5e9]">
-              VYRR<span className="text-primary">.</span>DASH
+              VOSH<span className="text-primary">.</span>DASH
             </h1>
             <p className="text-lg font-bold text-muted-foreground mt-2 italic">
-              The most radical yield in the metaverse.
+              High-Speed Yield. No Lag.
             </p>
           </div>
           
           <div className="flex justify-center md:justify-end">
-            {/* Using the official WalletMultiButton for full functionality */}
             <div className="wallet-button-container">
               <WalletMultiButton />
             </div>
           </div>
         </header>
 
-        <VyrrInsight isDataLoading={isLoading} />
+        <VoshInsight isDataLoading={isLoading} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <DashboardCard 
@@ -82,16 +84,29 @@ const Index = () => {
           ) : (
             <div className="space-y-4">
               {vaults.map((vault) => (
-                <div key={vault.id} className="flex items-center justify-between p-4 border-2 border-black bg-white hover:bg-primary/5 transition-colors cursor-pointer group">
-                  <div className="flex flex-col">
-                    <span className="font-bold text-lg">{vault.name}</span>
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Risk: {vault.risk}</span>
+                <div key={vault.id} className="flex flex-col md:flex-row items-center justify-between p-6 border-2 border-black bg-white hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer group gap-4">
+                  <div className="flex flex-col text-center md:text-left">
+                    <span className="font-black text-xl uppercase">{vault.name}</span>
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Risk Level: {vault.risk}</span>
                   </div>
-                  <div className="flex items-center gap-8">
-                    <span className="font-black text-primary text-xl">{vault.apy} APY</span>
-                    <span className="hidden md:inline-block px-3 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest group-hover:bg-accent transition-colors">
-                      {vault.status}
-                    </span>
+                  
+                  <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12 w-full md:w-auto">
+                    <div className="text-center md:text-right">
+                      <span className="block font-black text-primary text-2xl">{vault.apy} APY</span>
+                      <span className="text-[10px] font-bold uppercase text-accent">{vault.status}</span>
+                    </div>
+                    
+                    <Button 
+                      disabled={!connected}
+                      className={`w-full md:w-auto font-black uppercase tracking-tighter border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
+                        connected 
+                        ? 'bg-accent hover:bg-accent/90 text-black' 
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      <Coins className="mr-2 h-4 w-4" />
+                      {connected ? 'Insert Coin (Deposit)' : 'Connect to Play'}
+                    </Button>
                   </div>
                 </div>
               ))}

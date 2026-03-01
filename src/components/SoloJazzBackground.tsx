@@ -2,10 +2,17 @@
 
 import React from 'react';
 
-const SoloJazzBackground = () => {
+interface SoloJazzBackgroundProps {
+  isActive?: boolean;
+}
+
+const SoloJazzBackground = ({ isActive }: SoloJazzBackgroundProps) => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-[#f0fdfa]">
-      <svg className="absolute inset-0 w-full h-full opacity-40" xmlns="http://www.w3.org/2000/svg">
+      <svg 
+        className={`absolute inset-0 w-full h-full opacity-40 transition-transform duration-700 ease-out ${isActive ? 'translate-x-4 scale-105' : 'translate-x-0 scale-100'}`} 
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <filter id="brush-texture">
           <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
           <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />

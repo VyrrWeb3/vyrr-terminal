@@ -5,26 +5,26 @@ import { Sparkles, Zap, Ghost, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-interface VyrrInsightProps {
+interface VoshInsightProps {
   isDataLoading?: boolean;
 }
 
-const VyrrInsight = ({ isDataLoading }: VyrrInsightProps) => {
+const VoshInsight = ({ isDataLoading }: VoshInsightProps) => {
   const { publicKey, connected } = useWallet();
   
-  const getVyrrtyMessage = () => {
+  const getVoshMessage = () => {
     if (!connected) {
-      return "Yo! I'm Vyrrty. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
+      return "Yo! I'm Vosh. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
     }
     
     if (isDataLoading) {
-      return "Hold your horses! I'm currently intercepting the satellite feed for those sweet yields...";
+      return "Hold tight! I'm intercepting the high-speed yield streams right now...";
     }
     
     const address = publicKey?.toBase58();
     const truncated = address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "User";
     
-    return `Whoa, downloading complete! Level 2 is looking totally tubular today. Where are we dropping our coins, ${truncated}?`;
+    return `Whoosh! You're in. I'm Vosh, your high-speed guide to the best vaults on Solana. Let's get moving, ${truncated}!`;
   };
 
   return (
@@ -38,10 +38,10 @@ const VyrrInsight = ({ isDataLoading }: VyrrInsightProps) => {
         </div>
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
-            Vyrrty AI v1.0 {connected ? "[ONLINE]" : "[OFFLINE]"}
+            Vosh AI v1.0 {connected ? "[ACTIVE]" : "[STANDBY]"}
           </h3>
           <p className="text-xl font-black italic tracking-tight">
-            "{getVyrrtyMessage()}"
+            "{getVoshMessage()}"
           </p>
         </div>
       </CardContent>
@@ -49,4 +49,4 @@ const VyrrInsight = ({ isDataLoading }: VyrrInsightProps) => {
   );
 };
 
-export default VyrrInsight;
+export default VoshInsight;
