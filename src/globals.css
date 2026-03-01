@@ -60,14 +60,18 @@
 }
 
 .yield-text {
-  /* White -> Electric Violet -> Cobalt Blue */
-  background: linear-gradient(to right, #ffffff 10%, #a855f7 50%, #3b82f6 100%);
+  /* Smooth blend: Hot Pink to Bright Cyan (matches the wallet button) */
+  background: linear-gradient(90deg, #ec4899 0%, #22d3ee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  
+  /* The ultimate fix for italic webkit clipping */
   display: inline-block;
-  padding-right: 0.15em; /* Added slightly more room for the italic 'D' */
-  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.4)); /* Matching violet glow */
-  letter-spacing: -0.02em; /* Tighter, institutional feel */
+  padding-right: 0.25em; /* Gives the D room to render */
+  margin-right: -0.25em; /* Pulls the layout back so the gradient doesn't stretch */
+  
+  /* Cyan glow to match the right side of the gradient */
+  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.4)); 
 }
 
 /* Custom Wallet Button Styling - Midnight Arcade */
