@@ -60,12 +60,14 @@
 }
 
 .yield-text {
-  background: linear-gradient(to right, #ffffff 15%, #ec4899 45%, #ec4899 75%, #3b82f6 100%);
+  /* White -> Electric Violet -> Cobalt Blue */
+  background: linear-gradient(to right, #ffffff 10%, #a855f7 50%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  display: inline-block; /* The core layout fix to prevent clipping */
-  padding-right: 0.1em;    /* Essential breathing room for the 'D' */
-  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); /* Stabilizing neon glow */
+  display: inline-block;
+  padding-right: 0.15em; /* Added slightly more room for the italic 'D' */
+  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.4)); /* Matching violet glow */
+  letter-spacing: -0.02em; /* Tighter, institutional feel */
 }
 
 /* Custom Wallet Button Styling - Midnight Arcade */
