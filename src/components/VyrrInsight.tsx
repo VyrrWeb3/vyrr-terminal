@@ -1,8 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Terminal, ShieldAlert, Zap } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Sparkles, ShieldCheck, Zap } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 interface VyrrInsightProps {
@@ -17,41 +16,47 @@ const VyrrInsight = ({ isDataLoading, customMessage }: VyrrInsightProps) => {
     if (customMessage) return customMessage;
     
     if (!connected) {
-      return "SYSTEM: Vyrr terminal awaiting user uplink. Connect your wallet to access the grid.";
+      return "Vyrr is standing by. Connect your wallet to access the high-yield grid and start optimizing your capital.";
     }
     
     if (isDataLoading) {
-      return "SCANNING: Intercepting Solana yield vectors. Synchronizing data streams...";
+      return "Scanning the Solana ecosystem... I'm intercepting the most profitable yield vectors for you right now.";
     }
     
     const address = publicKey?.toBase58();
-    const truncated = address ? `${address.slice(0, 6)}...${address.slice(-6)}` : "NETRUNNER";
+    const truncated = address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "Partner";
     
-    return `UPLINK SECURED. Welcome, Netrunner [${truncated}]. Scanning the Solana grid for maximum yield...`;
+    return `Welcome back, ${truncated}. The grid is live and I've identified several high-performance vaults for your deployment.`;
   };
 
   return (
-    <Card className="bg-zinc-900/80 border-zinc-800 backdrop-blur-md mb-8 overflow-hidden relative border-l-2 border-l-cyan-500 rounded-none">
-      <CardContent className="p-4 flex items-start gap-4">
-        <div className="bg-cyan-500/10 p-2 border border-cyan-500/20">
-          {connected ? <Terminal className="text-cyan-400" size={20} /> : <ShieldAlert className="text-pink-500" size={20} />}
+    <div className="relative mb-12 group">
+      {/* Glow Effect */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+      
+      <div className="relative glass-card rounded-2xl p-6 flex items-center gap-6">
+        <div className="flex-shrink-0">
+          <div className="h-14 w-14 rounded-full bg-gradient-to-br from-pink-500 to-cyan-500 p-[2px] neon-glow-pink">
+            <div className="h-full w-full rounded-full bg-slate-950 flex items-center justify-center">
+              <Sparkles className="text-pink-400" size={24} />
+            </div>
+          </div>
         </div>
-        <div className="flex-1 font-mono">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-500/60">Vyrr_OS v2.0.4</span>
-            <span className="text-[10px] text-zinc-600">|</span>
-            <span className={`text-[10px] font-bold uppercase tracking-widest ${connected ? 'text-green-500' : 'text-pink-500'}`}>
-              {connected ? "Online" : "Locked"}
+        
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-1">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-pink-500">Vyrr Intelligence</span>
+            <div className="h-1 w-1 rounded-full bg-slate-700" />
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+              {connected ? "Active Uplink" : "System Standby"}
             </span>
           </div>
-          <p className="text-sm md:text-base text-zinc-200 leading-relaxed">
-            <span className="text-cyan-500 mr-2 font-bold">{">_"}</span>
+          <p className="text-lg font-medium text-slate-100 leading-snug">
             {getVyrrMessage()}
-            <span className="inline-block w-2 h-4 bg-cyan-500 ml-1 animate-pulse align-middle" />
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
