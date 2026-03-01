@@ -6,17 +6,19 @@ import VyrrInsight from './VyrrInsight';
 import DashboardCard from './DashboardCard';
 import VaultLoading from './VaultLoading';
 import ExtendedGrid from './ExtendedGrid';
+import WaitlistModal from './WaitlistModal';
 import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, ExternalLink, Sparkles } from 'lucide-react';
 import { MadeWithDyad } from "./made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button } from '@/components/ui/button';
-import { showError, showSuccess } from '@/utils/toast';
+import { showError } from '@/utils/toast';
 
 const Dashboard = () => {
   const [vaults, setVaults] = useState<any[]>([]);
   const { connected, publicKey, signMessage } = useWallet();
   const [vyrrResponse, setVyrrResponse] = useState<string | null>(null);
+  const [showWaitlist, setShowWaitlist] = useState(false);
 
   const formatTVL = (val: number) => {
     if (val >= 1000000000) return `$${(val / 1000000000).toFixed(1)}B`;
@@ -36,7 +38,6 @@ const Dashboard = () => {
           pool.tvlUsd > 1000000
         );
         
-        // Take top 10 for state
         const sorted = filtered.sort((a: any, b: any) => b.apy - a.apy).slice(0, 10);
         setVaults(sorted);
       } catch (e) {
@@ -61,10 +62,9 @@ const Dashboard = () => {
       
       await signMessage(encodedMessage);
       
-      setVyrrResponse(`Success! Signature verified. Devnet routing initiated for ${vaultName}. Your capital is being deployed.`);
-      showSuccess("Signature Verified. Devnet routing initiated.");
-      
-      setTimeout(() => setVyrrResponse(null), 6000);
+      // Clear insight and show waitlist instead of success toast
+      setVyrrResponse(null);
+      setShowWaitlist(true);
     } catch (error) {
       console.error("Signing failed:", error);
       setVyrrResponse("Authorization failed. The transaction was aborted.");
@@ -175,6 +175,11 @@ const Dashboard = () => {
         </div>
       </div>
       
+      <WaitlistModal 
+        isOpen={showWaitlist} 
+        onClose={() => setShowWaitlist(false)} 
+      />
+
       <footer className="mt-20 pb-8">
         <MadeWithDyad />
       </footer>
