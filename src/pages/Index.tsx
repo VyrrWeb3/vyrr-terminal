@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import SoloJazzBackground from '@/components/SoloJazzBackground';
 import CRTEffect from '@/components/CRTEffect';
 import VyrrInsight from '@/components/VyrrInsight';
@@ -12,10 +12,39 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useVaultData } from '@/hooks/useVaultData';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button } from '@/components/ui/button';
+import { showError, showSuccess } from '@/utils/toast';
 
 const Index = () => {
   const { vaults, isLoading } = useVaultData();
-  const { connected } = useWallet();
+  const { connected, publicKey, signMessage } = useWallet();
+  const [vyrrResponse, setVyrrResponse] = useState<string | null>(null);
+
+  const handleDeposit = async (vaultName: string, apy: string) => {
+    if (!publicKey || !signMessage) {
+      showError("Whoa! Connect your wallet first, dude!");
+      return;
+    }
+
+    try {
+      const messageText = `Vyrr System Authorization: I am confirming a test deposit into the ${vaultName} vault at ${apy} APY.`;
+      const encodedMessage = new TextEncoder().encode(messageText);
+      
+      await signMessage(encodedMessage);
+      
+      setVyrrResponse(`COWABUNGA! Signature confirmed. Vyrr is now routing your loot to the ${vaultName} vault!`);
+      showSuccess("Deposit Authorized!");
+      
+      // Reset Vyrr's message after 5 seconds
+      setTimeout(() => setVyrrResponse(null), 5000);
+    } catch (error) {
+      console.error("Signing failed:", error);
+      setVyrrResponse("Bummer! Transaction canceled. Let me know when you are ready to drop a coin.");
+      showError("Transaction Canceled");
+      
+      // Reset Vyrr's message after 5 seconds
+      setTimeout(() => setVyrrResponse(null), 5000);
+    }
+  };
 
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
@@ -43,7 +72,7 @@ const Index = () => {
           </div>
         </header>
 
-        <VyrrInsight isDataLoading={isLoading} />
+        <VyrrInsight isDataLoading={isLoading} customMessage={vyrrResponse} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <DashboardCard 
@@ -97,6 +126,7 @@ const Index = () => {
                     </div>
                     
                     <Button 
+                      onClick={() => handleDeposit(vault.name, vault.apy)}
                       disabled={!connected}
                       className={`w-full md:w-auto font-black uppercase tracking-tighter border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${
                         connected 

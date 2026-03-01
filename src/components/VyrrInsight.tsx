@@ -7,12 +7,15 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 interface VyrrInsightProps {
   isDataLoading?: boolean;
+  customMessage?: string | null;
 }
 
-const VyrrInsight = ({ isDataLoading }: VyrrInsightProps) => {
+const VyrrInsight = ({ isDataLoading, customMessage }: VyrrInsightProps) => {
   const { publicKey, connected } = useWallet();
   
   const getVyrrMessage = () => {
+    if (customMessage) return customMessage;
+    
     if (!connected) {
       return "Yo! I'm Vyrr. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
     }
