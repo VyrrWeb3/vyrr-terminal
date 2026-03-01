@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, Sparkles, Send, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 interface WaitlistModalProps {
@@ -14,29 +15,27 @@ interface WaitlistModalProps {
 const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
   const [email, setEmail] = useState('');
   const [joined, setJoined] = useState(false);
+  const [riskAgreed, setRiskAgreed] = useState(false);
   const { publicKey } = useWallet();
 
   if (!isOpen) return null;
 
   const handleJoinWaitlist = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !riskAgreed) return;
 
     const FORM_ID = '1FAIpQLSfeLxY1k66UnrxcSJ6fS3SwjcDYOCvFGO7KOAOzg2aTvoDyPg';
     const EMAIL_ENTRY = 'entry.1740249184';
     const WALLET_ENTRY = 'entry.1375079808';
     const walletAddress = publicKey ? publicKey.toString() : 'Not connected';
 
-    // Construct the URL with our data using template literals for proper formatting
     const submitUrl = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse?${EMAIL_ENTRY}=${encodeURIComponent(email)}&${WALLET_ENTRY}=${encodeURIComponent(walletAddress)}&submit=Submit`;
 
-    // Create a hidden iframe to "visit" the URL in the background
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     iframe.src = submitUrl;
     document.body.appendChild(iframe);
 
-    // Give it a second to "land" then show the success UI and cleanup
     setTimeout(() => {
       setJoined(true);
       document.body.removeChild(iframe);
@@ -46,7 +45,6 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
   return (
     <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="relative glass-card bg-slate-900 border border-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.2)] rounded-3xl p-8 max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300">
-        {/* Decorative Grid Background for Modal */}
         <div className="absolute inset-0 arcade-grid opacity-10 pointer-events-none" />
         
         <button 
@@ -76,7 +74,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
               </p>
             </div>
 
-            <form onSubmit={handleJoinWaitlist} className="space-y-4">
+            <form onSubmit={handleJoinWaitlist} className="space-y-6">
               <Input
                 type="email"
                 placeholder="NETRUNNER@PROTOCOL.VYRR"
@@ -85,9 +83,23 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-slate-950 border border-cyan-500/30 text-white placeholder:text-slate-700 h-12 rounded-xl focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all text-sm font-bold uppercase tracking-widest"
               />
+
+              <div className="flex items-start gap-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                <Checkbox 
+                  id="risk-check" 
+                  checked={riskAgreed}
+                  onCheckedChange={(checked) => setRiskAgreed(checked === true)}
+                  className="mt-1 border-slate-600 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
+                />
+                <label htmlFor="risk-check" className="text-[10px] leading-relaxed text-slate-400 font-medium cursor-pointer">
+                  I acknowledge that DeFi involves extreme risk, including the total loss of funds. I agree that Vyrr is not liable for my financial decisions.
+                </label>
+              </div>
+
               <Button 
                 type="submit"
-                className="w-full bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-400 hover:to-cyan-400 text-white font-black text-xs uppercase tracking-[0.2em] h-12 rounded-xl transition-all shadow-lg shadow-pink-500/20 group"
+                disabled={!riskAgreed}
+                className="w-full bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-400 hover:to-cyan-400 text-white font-black text-xs uppercase tracking-[0.2em] h-12 rounded-xl transition-all shadow-lg shadow-pink-500/20 group disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale"
               >
                 <span>Secure Access</span>
                 <Send size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />

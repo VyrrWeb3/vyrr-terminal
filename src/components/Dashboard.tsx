@@ -7,11 +7,12 @@ import DashboardCard from './DashboardCard';
 import VaultLoading from './VaultLoading';
 import ExtendedGrid from './ExtendedGrid';
 import WaitlistModal from './WaitlistModal';
-import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, ExternalLink, Sparkles } from 'lucide-react';
+import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, ExternalLink, Sparkles, Cpu } from 'lucide-react';
 import { MadeWithDyad } from "./made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { showError } from '@/utils/toast';
 
 const Dashboard = () => {
@@ -19,12 +20,26 @@ const Dashboard = () => {
   const { connected, publicKey, signMessage } = useWallet();
   const [vyrrResponse, setVyrrResponse] = useState<string | null>(null);
   const [showWaitlist, setShowWaitlist] = useState(false);
+  
+  // Master Console States
+  const [depositAmount, setDepositAmount] = useState<string>("1000");
+  const [allocations, setAllocations] = useState<number[]>([0, 0, 0]);
 
   const formatTVL = (val: number) => {
     if (val >= 1000000000) return `$${(val / 1000000000).toFixed(1)}B`;
     if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
     return `$${val.toLocaleString()}`;
   };
+
+  // Auto-calculate split when total deposit changes
+  useEffect(() => {
+    const total = parseFloat(depositAmount) || 0;
+    setAllocations([
+      Math.round(total * 0.6),
+      Math.round(total * 0.3),
+      Math.round(total * 0.1)
+    ]);
+  }, [depositAmount]);
 
   useEffect(() => {
     async function fetchYields() {
@@ -48,21 +63,28 @@ const Dashboard = () => {
     fetchYields();
   }, []);
 
-  const handleDeposit = async (vaultName: string, apy: number) => {
+  const handleManualAllocationChange = (index: number, value: string) => {
+    const newVal = parseFloat(value) || 0;
+    const newAllocations = [...allocations];
+    newAllocations[index] = newVal;
+    setAllocations(newAllocations);
+  };
+
+  const handleDeposit = async (vaultName: string, apy: number, amount?: number) => {
     if (!publicKey || !signMessage) {
       showError("Uplink required. Please connect your wallet.");
       return;
     }
 
     try {
-      setVyrrResponse(`Executing override. Please sign the transaction to route your funds into the ${vaultName} vault.`);
+      const displayAmount = amount || (parseFloat(depositAmount) / 3);
+      setVyrrResponse(`Executing override. Authorization for ${displayAmount} USDC into ${vaultName} at ${apy.toFixed(2)}% APY.`);
       
-      const messageText = `Vyrr System Authorization: I am confirming a test deposit into the ${vaultName} vault at ${apy.toFixed(2)}% APY.`;
+      const messageText = `Vyrr System Authorization: I am confirming a test deposit of ${displayAmount} into the ${vaultName} vault at ${apy.toFixed(2)}% APY.`;
       const encodedMessage = new TextEncoder().encode(messageText);
       
       await signMessage(encodedMessage);
       
-      // Clear insight and show waitlist instead of success toast
       setVyrrResponse(null);
       setShowWaitlist(true);
     } catch (error) {
@@ -109,6 +131,39 @@ const Dashboard = () => {
           <DashboardCard title="Network Latency" value="14ms" description="Real-time sync" icon={<Activity size={20} />} />
         </div>
 
+        {/* Master Console Section */}
+        <div className="glass-card p-8 rounded-3xl mb-12 border-l-4 border-l-cyan-500">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-4 flex-1">
+              <div className="flex items-center gap-2">
+                <Cpu className="text-cyan-400" size={18} />
+                <h3 className="text-lg font-black italic text-white uppercase tracking-widest">Master Console</h3>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em]">Deployment Amount (USDC)</label>
+                <div className="flex items-center gap-4">
+                  <Input 
+                    type="number" 
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value)}
+                    className="bg-slate-950/50 border-white/10 text-xl font-black italic text-cyan-400 h-14 rounded-xl w-full md:w-48"
+                  />
+                  <Button 
+                    onClick={() => handleDeposit("Aggregated Grid", 12.4, parseFloat(depositAmount))}
+                    disabled={!connected}
+                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-widest px-8 h-14 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+                  >
+                    Auto-Route Capital
+                  </Button>
+                </div>
+                <p className="font-mono text-[10px] text-cyan-400/70 mt-2">
+                  {`> SYSTEM RATIONALE: Capital heavily weighted toward Rank 1 APY. 3-point diversification applied to mitigate protocol-specific smart contract risk. User may override allocations below.`}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-12">
           <div className="glass-card p-8 md:p-10 rounded-3xl">
             <div className="flex items-center justify-between mb-10">
@@ -124,40 +179,45 @@ const Dashboard = () => {
             ) : (
               <div className="space-y-4">
                 {vaults.slice(0, 3).map((pool, index) => (
-                  <div key={pool.pool} className="flex flex-col md:flex-row items-center justify-between p-6 glass-card border-white/5 rounded-2xl hover:bg-white/10 transition-all group gap-8 border-t-2 border-t-pink-500/30 hover:border-t-pink-500">
-                    <div className="flex items-center gap-6 w-full md:w-auto">
+                  <div key={pool.pool} className="flex flex-col lg:flex-row items-center justify-between p-6 glass-card border-white/5 rounded-2xl hover:bg-white/10 transition-all group gap-8 border-t-2 border-t-pink-500/30 hover:border-t-pink-500">
+                    <div className="flex items-center gap-6 w-full lg:w-auto">
                       <div className="h-14 w-14 bg-slate-900 rounded-2xl flex items-center justify-center group-hover:bg-pink-500/10 transition-colors border border-white/5">
                         <Coins className="text-slate-500 group-hover:text-pink-400" size={28} />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-xl font-black text-white italic uppercase tracking-tight">
-                            Level {index + 1}: {pool.project}
+                            Rank {index + 1}: {pool.project}
                           </span>
-                          <ExternalLink size={14} className="text-slate-600" />
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{formatTVL(pool.tvlUsd)} TVL</span>
                           <div className="h-1 w-1 rounded-full bg-slate-700" />
-                          <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Solana Grid</span>
+                          <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">{pool.apy.toFixed(2)}% APY</span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex flex-col md:flex-row items-center gap-10 w-full md:w-auto">
-                      <div className="text-center md:text-right">
-                        <span className="block font-black text-pink-500 text-3xl italic tracking-tighter text-glow">
-                          {pool.apy.toFixed(2)}%
-                        </span>
-                        <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Projected APY</span>
+                    <div className="flex flex-col md:flex-row items-center gap-6 w-full lg:w-auto">
+                      <div className="flex flex-col gap-1 w-full md:w-32">
+                        <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Live Allocation</span>
+                        <div className="relative">
+                          <Input 
+                            type="number"
+                            value={allocations[index]}
+                            onChange={(e) => handleManualAllocationChange(index, e.target.value)}
+                            className="bg-slate-950/50 border-white/10 h-10 text-xs font-black text-white rounded-lg focus:border-pink-500 pr-8"
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-600">$</span>
+                        </div>
                       </div>
-                      
+
                       <Button 
-                        onClick={() => handleDeposit(pool.project, pool.apy)}
+                        onClick={() => handleDeposit(pool.project, pool.apy, allocations[index])}
                         disabled={!connected}
-                        className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-400 hover:to-cyan-300 text-white font-black text-xs uppercase tracking-widest px-10 h-14 rounded-xl transition-all shadow-lg shadow-pink-500/20 hover:shadow-pink-500/40 hover:translate-y-[-2px] active:translate-y-[0px] disabled:opacity-30"
+                        className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-400 hover:to-cyan-300 text-white font-black text-xs uppercase tracking-widest px-8 h-12 rounded-xl transition-all shadow-lg shadow-pink-500/20 disabled:opacity-30"
                       >
-                        Deploy Capital
+                        Deploy
                       </Button>
                     </div>
                   </div>
@@ -168,10 +228,14 @@ const Dashboard = () => {
 
           <ExtendedGrid 
             vaults={vaults.slice(3, 10)} 
-            onDeploy={handleDeposit} 
+            onDeploy={(name, apy) => handleDeposit(name, apy, 0)} 
             connected={connected} 
             formatTVL={formatTVL}
           />
+        </div>
+
+        <div className="mt-24 text-slate-600 text-[10px] text-center max-w-3xl mx-auto pb-8 leading-relaxed font-medium uppercase tracking-widest">
+          DISCLAIMER: Vyrr is currently in Testnet beta. No real funds are being deposited or routed. Cryptocurrency and DeFi yield farming involve substantial risk of loss. Vyrr Terminal is an interface, not a fund manager. By using this application, you acknowledge that you are fully responsible for your own capital and any resulting losses.
         </div>
       </div>
       
@@ -180,7 +244,7 @@ const Dashboard = () => {
         onClose={() => setShowWaitlist(false)} 
       />
 
-      <footer className="mt-20 pb-8">
+      <footer className="mt-10 pb-8">
         <MadeWithDyad />
       </footer>
     </div>
