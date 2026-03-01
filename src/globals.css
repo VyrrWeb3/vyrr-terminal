@@ -55,26 +55,28 @@
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
 }
 
+.neon-glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
 .text-glow {
   text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
 }
 
+.text-glow-cyan {
+  text-shadow: 0 0 15px rgba(34, 211, 238, 0.6);
+}
+
 .yield-text {
-  /* Sharp gradient from Hot Pink to Bright Cyan */
   background: linear-gradient(to right, #ec4899 0%, #22d3ee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  
-  /* Layout fix for italic character clipping */
   display: inline-block;
   padding-right: 0.15em;
   margin-right: -0.15em;
-  
-  /* Removed the fuzzy filter to ensure clean rendering */
   filter: none;
 }
 
-/* Custom Wallet Button Styling - Midnight Arcade */
 .wallet-adapter-button {
   background: linear-gradient(to right, #ec4899, #22d3ee) !important;
   color: white !important;
