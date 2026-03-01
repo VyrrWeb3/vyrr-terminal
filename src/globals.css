@@ -60,18 +60,18 @@
 }
 
 .yield-text {
-  /* Smooth blend: Hot Pink to Bright Cyan (matches the wallet button) */
-  background: linear-gradient(90deg, #ec4899 0%, #22d3ee 100%);
+  /* Exact gradient from the wallet button */
+  background: linear-gradient(to right, #ec4899, #22d3ee);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   
-  /* The ultimate fix for italic webkit clipping */
+  /* Layout fix for italic character clipping */
   display: inline-block;
-  padding-right: 0.25em; /* Gives the D room to render */
-  margin-right: -0.25em; /* Pulls the layout back so the gradient doesn't stretch */
+  padding-right: 0.2em;
+  margin-right: -0.2em;
   
-  /* Cyan glow to match the right side of the gradient */
-  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.4)); 
+  /* Matching the pink shadow profile of the button */
+  filter: drop-shadow(0 4px 12px rgba(236, 72, 153, 0.4));
 }
 
 /* Custom Wallet Button Styling - Midnight Arcade */
