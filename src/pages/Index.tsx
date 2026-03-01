@@ -5,11 +5,15 @@ import SoloJazzBackground from '@/components/SoloJazzBackground';
 import CRTEffect from '@/components/CRTEffect';
 import VyrrInsight from '@/components/VyrrInsight';
 import DashboardCard from '@/components/DashboardCard';
+import VaultLoading from '@/components/VaultLoading';
 import { Wallet, TrendingUp, ShieldCheck, Activity } from 'lucide-react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useVaultData } from '@/hooks/useVaultData';
 
 const Index = () => {
+  const { vaults, isLoading } = useVaultData();
+
   return (
     <div className="min-h-screen p-4 md:p-8 relative">
       <SoloJazzBackground />
@@ -34,7 +38,7 @@ const Index = () => {
           </div>
         </header>
 
-        <VyrrInsight />
+        <VyrrInsight isDataLoading={isLoading} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <DashboardCard 
@@ -69,23 +73,27 @@ const Index = () => {
 
         <div className="bg-white/50 backdrop-blur-md border-4 border-black p-8 rounded-3xl shadow-[12px_12px_0px_0px_rgba(0,0,0,0.1)]">
           <h3 className="text-2xl font-black mb-6 uppercase tracking-tight">Active Vaults</h3>
-          <div className="space-y-4">
-            {[
-              { name: 'Neon SOL', apy: '14.2%', status: 'Radical' },
-              { name: 'Cyber USDC', apy: '8.5%', status: 'Chill' },
-              { name: 'Retro JUP', apy: '22.1%', status: 'Juiced' }
-            ].map((vault, i) => (
-              <div key={i} className="flex items-center justify-between p-4 border-2 border-black bg-white hover:bg-primary/5 transition-colors cursor-pointer group">
-                <span className="font-bold text-lg">{vault.name}</span>
-                <div className="flex items-center gap-8">
-                  <span className="font-black text-primary">{vault.apy} APY</span>
-                  <span className="hidden md:inline-block px-3 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest group-hover:bg-accent transition-colors">
-                    {vault.status}
-                  </span>
+          
+          {isLoading ? (
+            <VaultLoading />
+          ) : (
+            <div className="space-y-4">
+              {vaults.map((vault) => (
+                <div key={vault.id} className="flex items-center justify-between p-4 border-2 border-black bg-white hover:bg-primary/5 transition-colors cursor-pointer group">
+                  <div className="flex flex-col">
+                    <span className="font-bold text-lg">{vault.name}</span>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Risk: {vault.risk}</span>
+                  </div>
+                  <div className="flex items-center gap-8">
+                    <span className="font-black text-primary text-xl">{vault.apy} APY</span>
+                    <span className="hidden md:inline-block px-3 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest group-hover:bg-accent transition-colors">
+                      {vault.status}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       

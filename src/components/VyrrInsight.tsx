@@ -1,29 +1,36 @@
 "use client";
 
 import React from 'react';
-import { Sparkles, Zap, Ghost } from 'lucide-react';
+import { Sparkles, Zap, Ghost, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-const VyrrInsight = () => {
+interface VyrrInsightProps {
+  isDataLoading?: boolean;
+}
+
+const VyrrInsight = ({ isDataLoading }: VyrrInsightProps) => {
   const { publicKey, connected } = useWallet();
-  const yieldData = 12.4;
   
   const getVyrrtyMessage = () => {
     if (!connected) {
       return "Yo! I'm Vyrrty. Connect your Game Boy... I mean, Phantom Wallet, so we can start grinding some XP.";
     }
     
+    if (isDataLoading) {
+      return "Hold your horses! I'm currently intercepting the satellite feed for those sweet yields...";
+    }
+    
     const address = publicKey?.toBase58();
     const truncated = address ? `${address.slice(0, 4)}...${address.slice(-4)}` : "User";
     
-    return `System Check: SUCCESS! Welcome back, ${truncated}. Ready to harvest some yield?`;
+    return `Whoa, downloading complete! Level 2 is looking totally tubular today. Where are we dropping our coins, ${truncated}?`;
   };
 
   return (
     <Card className="bg-black text-white border-4 border-primary shadow-[8px_8px_0px_0px_rgba(14,165,233,0.5)] mb-8 overflow-hidden relative group">
       <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
-        <Zap className="text-yellow-400 animate-pulse" size={32} />
+        {isDataLoading ? <Download className="text-primary animate-bounce" size={32} /> : <Zap className="text-yellow-400 animate-pulse" size={32} />}
       </div>
       <CardContent className="p-6 flex items-center gap-4">
         <div className="bg-primary p-3 rounded-full">
