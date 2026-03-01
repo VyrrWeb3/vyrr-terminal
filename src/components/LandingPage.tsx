@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { Shield, Zap, BarChart3, Lock } from 'lucide-react';
+import { Shield, Zap, Cpu, Lock } from 'lucide-react';
 import TechBackground from './TechBackground';
 
 const LandingPage = () => {
@@ -10,59 +10,58 @@ const LandingPage = () => {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
       <TechBackground />
       
-      <div className="max-w-5xl w-full z-10 space-y-20">
+      <div className="max-w-5xl w-full z-10 space-y-24">
         {/* Hero Section */}
         <header className="text-center space-y-8">
-          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 px-4 py-1.5 rounded-full mb-4">
-            <div className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-cyan-400">Vyrr Protocol v2.0</span>
+          <div className="inline-flex items-center gap-3 bg-zinc-900/80 border border-zinc-800 px-4 py-2 rounded-none mb-4 font-mono">
+            <div className="h-2 w-2 bg-cyan-500 animate-pulse" />
+            <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-cyan-400">Vyrr_Protocol_v2.0</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight">
-            Institutional Grade <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Solana Yield.</span>
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white leading-none uppercase">
+            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">Yield</span> Grid.
           </h1>
           
-          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
-            Automated yield optimization for the Solana ecosystem. Secure, transparent, and engineered for maximum capital efficiency.
+          <p className="text-base md:text-lg text-zinc-500 max-w-xl mx-auto font-mono uppercase tracking-wide leading-relaxed">
+            Connect your wallet. We grind the XP. You keep the loot. No lag, just pure Solana gains.
           </p>
           
-          <div className="pt-4 flex justify-center">
-            <div className="glow-cyan rounded-lg">
+          <div className="pt-6 flex justify-center">
+            <div className="glow-cyan-hover transition-all duration-300">
               <WalletMultiButton />
             </div>
           </div>
         </header>
 
         {/* Features Section */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-2xl backdrop-blur-sm hover:border-cyan-500/30 transition-colors group">
-            <div className="bg-cyan-500/10 p-3 w-fit rounded-xl mb-6 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
-              <BarChart3 className="text-cyan-400" size={24} />
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 font-mono">
+          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-none backdrop-blur-sm hover:border-cyan-500/30 transition-all group">
+            <div className="text-cyan-500 mb-6 group-hover:scale-110 transition-transform">
+              <Cpu size={24} />
             </div>
-            <h3 className="font-semibold text-lg text-white mb-3">Zero Entry Fee</h3>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              Deploy capital without upfront costs. We prioritize accessibility for all institutional participants.
+            <h3 className="font-bold text-sm text-white mb-3 uppercase tracking-widest">Zero Entry Fee</h3>
+            <p className="text-zinc-600 text-xs leading-relaxed uppercase">
+              Deploy capital without upfront costs. Accessibility for all netrunners.
             </p>
           </div>
 
-          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-2xl backdrop-blur-sm hover:border-cyan-500/30 transition-colors group">
-            <div className="bg-cyan-500/10 p-3 w-fit rounded-xl mb-6 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
-              <Zap className="text-cyan-400" size={24} />
+          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-none backdrop-blur-sm hover:border-pink-500/30 transition-all group">
+            <div className="text-pink-500 mb-6 group-hover:scale-110 transition-transform">
+              <Zap size={24} />
             </div>
-            <h3 className="font-semibold text-lg text-white mb-3">Performance Based</h3>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              A flat 10% performance fee on generated yield. Our incentives are perfectly aligned with your growth.
+            <h3 className="font-bold text-sm text-white mb-3 uppercase tracking-widest">Performance Based</h3>
+            <p className="text-zinc-600 text-xs leading-relaxed uppercase">
+              10% performance fee on generated yield. Incentives aligned with growth.
             </p>
           </div>
 
-          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-2xl backdrop-blur-sm hover:border-cyan-500/30 transition-colors group">
-            <div className="bg-cyan-500/10 p-3 w-fit rounded-xl mb-6 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-colors">
-              <Shield className="text-cyan-400" size={24} />
+          <div className="bg-zinc-900/40 border border-zinc-800 p-8 rounded-none backdrop-blur-sm hover:border-cyan-500/30 transition-all group">
+            <div className="text-cyan-500 mb-6 group-hover:scale-110 transition-transform">
+              <Shield size={24} />
             </div>
-            <h3 className="font-semibold text-lg text-white mb-3">Principal Security</h3>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              Retain 100% of your principal. Vyrr only optimizes the yield layer while maintaining asset safety.
+            <h3 className="font-bold text-sm text-white mb-3 uppercase tracking-widest">Principal Security</h3>
+            <p className="text-zinc-600 text-xs leading-relaxed uppercase">
+              Retain 100% of principal. Vyrr only optimizes the yield layer.
             </p>
           </div>
         </section>

@@ -12,7 +12,7 @@
     --popover-foreground: 0 0% 98%;
     --primary: 180 100% 50%;
     --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 322 100% 50%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
@@ -23,7 +23,7 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 180 100% 50%;
-    --radius: 0.5rem;
+    --radius: 0.25rem;
   }
 }
 
@@ -32,40 +32,49 @@
     @apply border-border;
   }
   body {
-    @apply bg-zinc-950 text-zinc-100 font-sans antialiased;
+    @apply bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500/30;
   }
 }
 
-.tech-grid {
-  background-image: radial-gradient(circle at 1px 1px, rgba(34, 211, 238, 0.05) 1px, transparent 0);
-  background-size: 40px 40px;
+.digital-grid {
+  background-image: 
+    linear-gradient(to right, rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
 }
 
 .glow-cyan {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
 }
 
 .glow-cyan-hover:hover {
-  box-shadow: 0 0 25px rgba(34, 211, 238, 0.3);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
 }
 
-/* Custom Wallet Button Styling - Sleek Dark Mode */
+.glow-pink {
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+}
+
+/* Custom Wallet Button Styling - Cyberpunk Terminal */
 .wallet-adapter-button {
   background-color: transparent !important;
   color: #22d3ee !important;
-  font-family: inherit !important;
-  font-weight: 600 !important;
-  border: 1px solid rgba(34, 211, 238, 0.3) !important;
-  border-radius: 6px !important;
-  transition: all 0.2s ease-in-out !important;
-  height: 42px !important;
-  font-size: 14px !important;
+  font-family: 'Space Mono', monospace !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  border: 1px solid rgba(34, 211, 238, 0.4) !important;
+  border-radius: 0px !important;
+  transition: all 0.3s ease !important;
+  height: 40px !important;
+  font-size: 12px !important;
 }
 
 .wallet-adapter-button:not([disabled]):hover {
   background-color: rgba(34, 211, 238, 0.1) !important;
   border-color: #22d3ee !important;
-  box-shadow: 0 0 15px rgba(34, 211, 238, 0.2) !important;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.3) !important;
+  transform: translateY(-1px);
 }
 
 .wallet-adapter-button-trigger {
