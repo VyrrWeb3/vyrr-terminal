@@ -9,6 +9,7 @@ export interface Vault {
   risk: 'Low' | 'Medium' | 'High';
   level: number;
   status: string;
+  project: string;
 }
 
 export const useVaultData = () => {
@@ -16,16 +17,37 @@ export const useVaultData = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setVaults([
-        { id: '1', name: 'Level 1: Safe', apy: '5.2%', risk: 'Low', level: 1, status: 'Chill' },
-        { id: '2', name: 'Level 2: Growth', apy: '8.4%', risk: 'Medium', level: 2, status: 'Radical' },
-        { id: '3', name: 'Level 3: Radical', apy: '14.1%', risk: 'High', level: 3, status: 'Juiced' },
-      ]);
-      setIsLoading(false);
-    }, 2000);
+    const fetchYields = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('https://yields.llama.fi/pools');
+        const json = await response.json();
+        
+        // Filter for Solana USDC pools
+        const solanaUsdcPools = json.data
+          .filter((pool: any) => pool.chain === 'Solana' && pool.symbol === 'USDC')
+          .sort((a: any, b: any) => b.apy - a.apy)
+          .slice(0, 3);
 
-    return () => clearTimeout(timer);
+        const mappedVaults: Vault[] = solanaUsdcPools.map((pool: any, index: number) => ({
+          id: pool.pool,
+          name: `Level ${index + 1}: ${pool.project}`,
+          apy: `${pool.apy.toFixed(2)}%`,
+          risk: index === 0 ? 'High' : index === 1 ? 'Medium' : 'Low',
+          level: index + 1,
+          status: index === 0 ? 'Juiced' : index === 1 ? 'Radical' : 'Chill',
+          project: pool.project
+        }));
+
+        setVaults(mappedVaults);
+      } catch (error) {
+        console.error("Failed to fetch yields:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchYields();
   }, []);
 
   return { vaults, isLoading };
