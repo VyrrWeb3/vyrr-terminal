@@ -192,13 +192,18 @@ const Dashboard = () => {
                           ? 'Capital Fully Allocated' 
                           : `Unallocated Capital: $${remainingBalance}`}
                       </div>
-                      <Button 
-                        onClick={handleMasterDeploy}
-                        disabled={!connected || remainingBalance !== 0}
-                        className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-widest px-8 h-14 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:opacity-20 disabled:grayscale transition-all"
-                      >
-                        Auto-Route Capital
-                      </Button>
+                      <div className="flex flex-col items-center">
+                        <Button 
+                          onClick={handleMasterDeploy}
+                          disabled={!connected || remainingBalance !== 0}
+                          className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-widest px-8 h-14 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] disabled:opacity-20 disabled:grayscale transition-all w-full"
+                        >
+                          Auto-Route Capital
+                        </Button>
+                        <p className="text-[9px] font-bold text-slate-600 uppercase tracking-tight mt-1">
+                          (Standard network gas fees apply)
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <p className="font-mono text-[10px] text-cyan-400/70">
