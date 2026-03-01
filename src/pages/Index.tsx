@@ -1,17 +1,90 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+"use client";
 
+import React from 'react';
+import SoloJazzBackground from '@/components/SoloJazzBackground';
+import CRTEffect from '@/components/CRTEffect';
+import VyrrInsight from '@/components/VyrrInsight';
+import DashboardCard from '@/components/DashboardCard';
+import { Wallet, TrendingUp, ShieldCheck, Activity } from 'lucide-react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">
-          Start building your amazing project here!
-        </p>
+    <div className="min-h-screen p-4 md:p-8 relative">
+      <SoloJazzBackground />
+      <CRTEffect />
+      
+      <div className="max-w-6xl mx-auto relative z-10">
+        <header className="mb-12 text-center md:text-left">
+          <div className="inline-block bg-black text-white px-4 py-1 mb-4 transform -skew-x-12 border-r-8 border-accent">
+            <h2 className="text-sm font-bold tracking-[0.3em] uppercase">Solana Yield Aggregator</h2>
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter text-black drop-shadow-[4px_4px_0px_#0ea5e9]">
+            VYRR<span className="text-primary">.</span>DASH
+          </h1>
+          <p className="text-lg font-bold text-muted-foreground mt-2 italic">
+            The most radical yield in the metaverse.
+          </p>
+        </header>
+
+        <VyrrInsight />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <DashboardCard 
+            title="Total Value" 
+            value="$4.2M" 
+            description="Hella liquidity, dude!" 
+            icon={<Wallet size={20} />}
+            color="primary"
+          />
+          <DashboardCard 
+            title="Daily Yield" 
+            value="+12.4%" 
+            description="To the moon and back!" 
+            icon={<TrendingUp size={20} />}
+            color="secondary"
+          />
+          <DashboardCard 
+            title="Vault Safety" 
+            value="A+" 
+            description="Safe as a floppy disk." 
+            icon={<ShieldCheck size={20} />}
+            color="accent"
+          />
+          <DashboardCard 
+            title="Network Load" 
+            value="Low" 
+            description="Smooth like a dial-up tone." 
+            icon={<Activity size={20} />}
+            color="primary"
+          />
+        </div>
+
+        <div className="bg-white/50 backdrop-blur-md border-4 border-black p-8 rounded-3xl shadow-[12px_12px_0px_0px_rgba(0,0,0,0.1)]">
+          <h3 className="text-2xl font-black mb-6 uppercase tracking-tight">Active Vaults</h3>
+          <div className="space-y-4">
+            {[
+              { name: 'Neon SOL', apy: '14.2%', status: 'Radical' },
+              { name: 'Cyber USDC', apy: '8.5%', status: 'Chill' },
+              { name: 'Retro JUP', apy: '22.1%', status: 'Juiced' }
+            ].map((vault, i) => (
+              <div key={i} className="flex items-center justify-between p-4 border-2 border-black bg-white hover:bg-primary/5 transition-colors cursor-pointer group">
+                <span className="font-bold text-lg">{vault.name}</span>
+                <div className="flex items-center gap-8">
+                  <span className="font-black text-primary">{vault.apy} APY</span>
+                  <span className="hidden md:inline-block px-3 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest group-hover:bg-accent transition-colors">
+                    {vault.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <MadeWithDyad />
+      
+      <footer className="mt-20 pb-8">
+        <MadeWithDyad />
+      </footer>
     </div>
   );
 };
