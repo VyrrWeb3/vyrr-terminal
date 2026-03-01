@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, Sparkles, Send, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -13,13 +14,35 @@ interface WaitlistModalProps {
 const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
   const [email, setEmail] = useState('');
   const [joined, setJoined] = useState(false);
+  const { publicKey } = useWallet();
 
   if (!isOpen) return null;
 
-  const handleJoinWaitlist = (e: React.FormEvent) => {
+  const handleJoinWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setJoined(true);
+    
+    if (!email) return;
+
+    try {
+      const response = await fetch('https://formspree.io/f/mojnzywy', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          wallet: publicKey ? publicKey.toString() : 'Not connected'
+        })
+      });
+
+      if (response.ok) {
+        setJoined(true);
+      } else {
+        console.error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
     }
   };
 
@@ -85,7 +108,7 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
                 Transmission Received.
               </h3>
               <p className="text-slate-400 font-medium text-sm leading-relaxed px-4">
-                You are on the grid. We will contact you when the mainnet vaults open for deployment.
+                You are on the grid. We will contact you when the Mainnet vaults open.
               </p>
             </div>
 
