@@ -34,7 +34,10 @@ const Index = () => {
           </div>
           
           <div className="flex justify-center md:justify-end">
-            <WalletMultiButton />
+            {/* Using the official WalletMultiButton for full functionality */}
+            <div className="wallet-button-container">
+              <WalletMultiButton />
+            </div>
           </div>
         </header>
 
