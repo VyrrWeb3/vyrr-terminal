@@ -14,7 +14,6 @@ import { showError, showSuccess } from '@/utils/toast';
 
 const Dashboard = () => {
   const [vaults, setVaults] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { connected, publicKey, signMessage } = useWallet();
   const [vyrrResponse, setVyrrResponse] = useState<string | null>(null);
 
@@ -27,7 +26,6 @@ const Dashboard = () => {
   useEffect(() => {
     async function fetchYields() {
       try {
-        setIsLoading(true);
         const res = await fetch('https://yields.llama.fi/pools');
         const json = await res.json();
         
@@ -44,8 +42,6 @@ const Dashboard = () => {
       } catch (e) {
         console.error('Failed to fetch yields:', e);
         setVyrrResponse("Connection disrupted. Retrying uplink to the yield grid.");
-      } finally {
-        setIsLoading(false);
       }
     }
     fetchYields();
@@ -83,7 +79,7 @@ const Dashboard = () => {
       <TechBackground />
       
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Increased z-index to ensure wallet dropdown is visible */}
+        {/* Fixed Z-Index for Wallet Dropdown */}
         <header className="mb-16 flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-[100]">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -106,7 +102,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        <VyrrInsight isDataLoading={isLoading} customMessage={vyrrResponse} />
+        <VyrrInsight isDataLoading={vaults.length === 0} customMessage={vyrrResponse} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <DashboardCard 
@@ -144,7 +140,8 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {isLoading ? (
+          {/* Strict Live-Only Rendering */}
+          {vaults.length === 0 ? (
             <VaultLoading />
           ) : (
             <div className="space-y-4">
