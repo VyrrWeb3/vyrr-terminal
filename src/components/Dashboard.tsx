@@ -8,24 +8,54 @@ import VaultLoading from './VaultLoading';
 import { Wallet, TrendingUp, ShieldCheck, Activity, Coins, ExternalLink, Sparkles } from 'lucide-react';
 import { MadeWithDyad } from "./made-with-dyad";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useLiveYields } from '@/hooks/useLiveYields';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button } from '@/components/ui/button';
 import { showError, showSuccess } from '@/utils/toast';
 
 const Dashboard = () => {
-  const { vaults, isLoading, error, formatTVL } = useLiveYields();
+  const [vaults, setVaults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { connected, publicKey, signMessage } = useWallet();
   const [vyrrResponse, setVyrrResponse] = useState<string | null>(null);
 
-  // Update Vyrr's message if there's a fetch error
-  useEffect(() => {
-    if (error) {
-      setVyrrResponse(error);
-    }
-  }, [error]);
+  const formatTVL = (val: number) => {
+    if (val >= 1000000000) return `$${(val / 1000000000).toFixed(1)}B`;
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+    return `$${val.toLocaleString()}`;
+  };
 
-  const handleDeposit = async (vaultName: string, apy: string) => {
+  useEffect(() => {
+    const fetchYields = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('https://yields.llama.fi/pools');
+        const jsonResponse = await response.json();
+        
+        // Filter: Solana, USDC, TVL > $1M
+        const filtered = jsonResponse.data
+          .filter((pool: any) => 
+            pool.chain === 'Solana' && 
+            pool.symbol === 'USDC' && 
+            pool.tvlUsd > 1000000
+          )
+          // Sort: Highest APY first
+          .sort((a: any, b: any) => b.apy - a.apy)
+          // Top 3
+          .slice(0, 3);
+
+        setVaults(filtered);
+      } catch (error) {
+        console.error("Failed to fetch yields:", error);
+        setVyrrResponse("Connection disrupted. Retrying uplink to the yield grid.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchYields();
+  }, []);
+
+  const handleDeposit = async (vaultName: string, apy: number) => {
     if (!publicKey || !signMessage) {
       showError("Uplink required. Please connect your wallet.");
       return;
@@ -34,7 +64,7 @@ const Dashboard = () => {
     try {
       setVyrrResponse(`Executing override. Please sign the transaction to route your funds into the ${vaultName} vault.`);
       
-      const messageText = `Vyrr System Authorization: I am confirming a test deposit into the ${vaultName} vault at ${apy} APY.`;
+      const messageText = `Vyrr System Authorization: I am confirming a test deposit into the ${vaultName} vault at ${apy.toFixed(2)}% APY.`;
       const encodedMessage = new TextEncoder().encode(messageText);
       
       await signMessage(encodedMessage);
@@ -121,15 +151,17 @@ const Dashboard = () => {
             <VaultLoading />
           ) : (
             <div className="space-y-4">
-              {vaults.map((vault) => (
-                <div key={vault.id} className="flex flex-col md:flex-row items-center justify-between p-6 glass-card border-white/5 rounded-2xl hover:bg-white/10 transition-all group gap-8 border-t-2 border-t-pink-500/30 hover:border-t-pink-500">
+              {vaults.map((vault, index) => (
+                <div key={vault.pool} className="flex flex-col md:flex-row items-center justify-between p-6 glass-card border-white/5 rounded-2xl hover:bg-white/10 transition-all group gap-8 border-t-2 border-t-pink-500/30 hover:border-t-pink-500">
                   <div className="flex items-center gap-6 w-full md:w-auto">
                     <div className="h-14 w-14 bg-slate-900 rounded-2xl flex items-center justify-center group-hover:bg-pink-500/10 transition-colors border border-white/5">
                       <Coins className="text-slate-500 group-hover:text-pink-400" size={28} />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xl font-black text-white italic uppercase tracking-tight">Level {vault.level}: {vault.project}</span>
+                        <span className="text-xl font-black text-white italic uppercase tracking-tight">
+                          Level {index + 1}: {vault.project.charAt(0).toUpperCase() + vault.project.slice(1)}
+                        </span>
                         <ExternalLink size={14} className="text-slate-600" />
                       </div>
                       <div className="flex items-center gap-3">
@@ -149,7 +181,7 @@ const Dashboard = () => {
                     </div>
                     
                     <Button 
-                      onClick={() => handleDeposit(vault.project, `${vault.apy.toFixed(2)}%`)}
+                      onClick={() => handleDeposit(vault.project, vault.apy)}
                       disabled={!connected}
                       className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-cyan-500 hover:from-pink-400 hover:to-cyan-300 text-white font-black text-xs uppercase tracking-widest px-10 h-14 rounded-xl transition-all shadow-lg shadow-pink-500/20 hover:shadow-pink-500/40 hover:translate-y-[-2px] active:translate-y-[0px] disabled:opacity-30 disabled:shadow-none disabled:translate-y-0"
                     >
