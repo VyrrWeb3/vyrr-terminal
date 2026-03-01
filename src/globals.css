@@ -59,6 +59,15 @@
   text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
 }
 
+.yield-text {
+  background: linear-gradient(to right, #ffffff 30%, #ec4899 60%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block; /* Essential to prevent clipping */
+  padding-right: 4px;    /* Gives the D breathing room */
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3)); /* Adds a subtle 'stabilizing' glow */
+}
+
 /* Custom Wallet Button Styling - Midnight Arcade */
 .wallet-adapter-button {
   background: linear-gradient(to right, #ec4899, #22d3ee) !important;

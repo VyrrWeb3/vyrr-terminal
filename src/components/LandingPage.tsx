@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { Shield, Zap, BarChart3, ArrowRight } from 'lucide-react';
+import { Shield, Zap, BarChart3 } from 'lucide-react';
 import TechBackground from './TechBackground';
 
 const LandingPage = () => {
@@ -20,7 +20,7 @@ const LandingPage = () => {
           
           <div className="space-y-4">
             <h1 className="text-7xl md:text-9xl font-black tracking-tighter text-white leading-[0.85] uppercase italic text-glow">
-              The <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-400">Yield</span> <br /> Grid.
+              The <span className="yield-text">Yield</span> <br /> Grid.
             </h1>
             <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
               Connect your wallet. We grind the XP. You keep the loot. <br className="hidden md:block" />
