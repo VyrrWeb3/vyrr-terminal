@@ -18,34 +18,29 @@ const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps) => {
 
   if (!isOpen) return null;
 
-  const handleJoinWaitlist = async (e: React.FormEvent) => {
+  const handleJoinWaitlist = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfeLxY1k66UnrxcSJ6fS3SwjcDYOCvFGO7KOAOzg2aTvoDyPg/formResponse';
+    const FORM_ID = '1FAIpQLSfeLxY1k66UnrxcSJ6fS3SwjcDYOCvFGO7KOAOzg2aTvoDyPg';
     const EMAIL_ENTRY = 'entry.1740249184';
     const WALLET_ENTRY = 'entry.1375079808';
+    const walletAddress = publicKey ? publicKey.toString() : 'Not connected';
 
-    const formData = new URLSearchParams();
-    formData.append(EMAIL_ENTRY, email);
-    formData.append(WALLET_ENTRY, publicKey ? publicKey.toString() : 'Not connected');
+    // Construct the URL with our data using template literals for proper formatting
+    const submitUrl = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse?${EMAIL_ENTRY}=${encodeURIComponent(email)}&${WALLET_ENTRY}=${encodeURIComponent(walletAddress)}&submit=Submit`;
 
-    try {
-      // Using no-cors to prevent browser blocking from Google Forms
-      await fetch(FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData.toString()
-      });
+    // Create a hidden iframe to "visit" the URL in the background
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = submitUrl;
+    document.body.appendChild(iframe);
 
-      // Since no-cors doesn't return a readable response, we assume success
+    // Give it a second to "land" then show the success UI and cleanup
+    setTimeout(() => {
       setJoined(true);
-    } catch (error) {
-      console.error('Submission error:', error);
-    }
+      document.body.removeChild(iframe);
+    }, 1000);
   };
 
   return (
